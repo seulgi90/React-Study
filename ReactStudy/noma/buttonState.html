@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<body>
+    <button id="root">Click me</button>
+</body>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+
+    function App () {
+        const [counter, setCounter] = React.useState(0);
+
+        const onClick = () => {
+           setCounter (counter + 1); // 직접 설정 
+        //    setCounter( (current) => current +1); // currnt가 현재 값이라는걸 보장, 위에 방법보다 안전, 현재 state 를 기반으로 계산 시 함수를 이용한다
+        //    console.log(counter)
+        };
+        return (
+            <div>
+                <h3>Total clicks : {counter}</h3>
+                <button onClick={onClick}>Click me</button>             
+            </div>
+            
+        );
+    }
+    ReactDOM.render(<App />, root);
+</script>
+</html>
