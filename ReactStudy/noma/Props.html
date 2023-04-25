@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<body>
+    <button id="root">Click me</button>
+</body>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+    // 함수형 컴포넌트
+    function SaveBtn() {
+        return (
+            <button 
+                style={{
+                    backgroundColor: "tomato",
+                    color: "white",
+                    padding:"10px 20px",
+                    border: 0,
+                    borderRadius: 10,
+                }}
+            >
+                Save Change
+            </button>
+        );
+    }
+    // 함수형 컴포넌트
+    function ConfirmBtn() {
+        return (
+            <button 
+                style={{
+                        backgroundColor: "tomato",
+                        color: "white",
+                        padding:"10px 20px",
+                        border: 0,
+                        borderRadius: 10,
+                }}
+            >
+                Confirm
+            </button>
+        );
+    }
+    function App() {
+
+        return (
+            // JSX의 내부
+            <div>
+                <SaveBtn />
+                <ConfirmBtn />
+            </div>
+        );
+    }
+
+    const root = document.getElementById("root");
+    ReactDOM.render(<App />, root);
+</script>
+
+</html>

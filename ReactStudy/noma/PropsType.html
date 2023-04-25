@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<body>
+    <button id="root">Click me</button>
+</body>
+<script crossorigin src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/prop-types@15.6/prop-types.js"></script>
+<script type="text/babel">
+    // 함수형 컴포넌트
+    function Btn({text, fontSize = 12}) {  // fontSize = 12 default 값 설정
+        return (
+            <button 
+                style={{
+                    backgroundColor: "tomato",
+                    color: "white",
+                    padding:"10px 20px",
+                    border: 0,
+                    borderRadius: 10,
+                    fontSize, // fontSize: fontSize 인데 이름이 같기때문에 그냥 써주어도 된다
+                }}
+            >
+                {text}
+            </button>
+        );
+    }
+    // propTypes :  속성 유효성 검사
+    Btn.propTypes = {
+        text: PropTypes.string.isRequired,
+        fontSize: PropTypes.number,
+    };
+    function App() {
+
+        return (
+            // JSX의 내부
+            <div>
+                <Btn text="Save Change" fontSize={18} />
+                <Btn text={"contiue"} />
+
+                {/*<Btn text={14} fontSize={"contiue"} />*/} 
+                {/*Uncaught ReferenceError: propTypes is not defined*/} 
+            </div>
+        );
+    }
+
+    const root = document.getElementById("root");
+    ReactDOM.render(<App />, root);
+</script>
+
+</html>

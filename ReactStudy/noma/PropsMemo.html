@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<body>
+    <button id="root">Click me</button>
+</body>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+    
+    function Btn({text, changeValue}) { 
+        console.log(text, "was rendered"); 
+        return (
+            <button 
+                onClick={changeValue}
+                style={{
+                    backgroundColor: "tomato",
+                    color: "white",
+                    padding:"10px 20px",
+                    border: 0,
+                    borderRadius: 10,
+                }}
+            >
+                {text}
+            </button>
+        );
+    }
+     // props가 변경되지 않으면 re-render 되지 않게함
+     // prop이 변경 되었다는것은 state가 변했었다, state는 prop과 연결되어있다 
+    const MemorizedBtn = React.memo(Btn);
+   
+    function App() {
+        
+        const [value, setValue] = React.useState("Save Change");
+        const changeValue = () => setValue("Revert Changes");
+        return (
+            // JSX의 내부
+            <div>
+                <MemorizedBtn text={value} changeValue={changeValue} />
+
+                {/*<Btn text={value} onClick={changeValue} /> */}
+                {/*커스텀 컴포넌트에다가 onClick을 넣은 것은 이벤트리스너가 아님 주의, 하나의 prop 이름일뿐 */}
+                {/*style을 커스텀 컴포넌트에 작성하여도 적용 안됨! */}
+                <MemorizedBtn text="Continue" />
+            </div>
+        );
+    }
+
+    const root = document.getElementById("root");
+    ReactDOM.render(<App />, root);
+</script>
+
+</html>

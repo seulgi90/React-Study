@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<body>
+    <button id="root">Click me</button>
+</body>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+    // 함수형 컴포넌트
+    function Btn({text, big}) { 
+        // Btn(props) --> {props.text} 하지만 props는 오브젝트이기때문에 
+        // 오브젝트로부터 Btn({text}) --> {text} 이렇게 받을수 있다
+        console.log(text, big); 
+        //console.log(props); // props : 오브젝트
+        // {banana: 'Save Change'}
+        // {banana: 'Continue'}
+        return (
+            <button 
+                style={{
+                    backgroundColor: "tomato",
+                    color: "white",
+                    padding:"10px 20px",
+                    border: 0,
+                    borderRadius: 10,
+                    fontSize: big ? 18 : 13,
+                }}
+            >
+                {text}
+            </button>
+        );
+    }
+    function App() {
+
+        return (
+            // JSX의 내부
+            <div>
+                <Btn text="Save Change" big={true} />
+                <Btn text="Continue" />
+            </div>
+        );
+    }
+
+    const root = document.getElementById("root");
+    ReactDOM.render(<App />, root);
+</script>
+
+</html>
