@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 function App() {
   const [toDo, setToDo] = useState("");
@@ -19,7 +20,7 @@ function App() {
 
     setToDo(""); // 단순히 값만 보내서 수정하는 방식 
   };
-
+  
   console.log("toDo",toDo);
   console.log("toDos",toDos);
 
@@ -34,7 +35,13 @@ function App() {
       <ul>
         {toDos.map((toDos, index) => <li key={index}>{toDos}</li>)} 
       </ul>
+      <hr />
+
+      <h2>
+        <Link to={`/`}>게시판 목록으로</Link>
+      </h2>
     </div>
+
   );
   // {toDos.map()} : map은 하나의 array에 있는 item을 내가 원하는 무엇이든지로 바꿔주는 역할 
   // toDos.map((toDos) toDos 대신 item 등 다양하게 작성 가능

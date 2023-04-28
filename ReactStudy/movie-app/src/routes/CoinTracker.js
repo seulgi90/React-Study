@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
-function App() {
+function CoinTracker() {
   const [loading, setLoading] = useState(true);
   const [coins, setCoins] = useState([]);
 
@@ -47,6 +48,9 @@ function App() {
   
   return (
     <div>
+      <h2>
+        <Link to={`/`}>게시판 목록으로</Link>
+        </h2>
       <h1>The Coins! ({coins.length})</h1>
       {loading ? <strong>Loading...</strong> : (
         <select value={selectedValue} onChange={onChangeSelectValue}>
@@ -72,4 +76,4 @@ function App() {
   );
 }
 
-export default App;
+export default CoinTracker;
