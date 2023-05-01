@@ -20,9 +20,16 @@ function App() {
 
     setToDo(""); // 단순히 값만 보내서 수정하는 방식 
   };
+
+  const deleteToDo = (index) => {
+    setToDos((currentArray) => {
+      const newArray = [...currentArray];
+      newArray.splice(index, 1);
+      return newArray;
+    });
+  };
   
-  console.log("toDo",toDo);
-  console.log("toDos",toDos);
+  const [showing, setShowing] = useState(true);
 
   return (
     <div>
@@ -33,7 +40,14 @@ function App() {
       </form>
       <hr />
       <ul>
-        {toDos.map((toDos, index) => <li key={index}>{toDos}</li>)} 
+        {/* {toDos.map((toDos, index) => <li key={index}>{toDos} 
+        {showing ? <button onClick={deleteToDo}>삭제</button> : null}</li>)} */}
+        {toDos.map((toDo, index) => showing ? (
+          <li key={index}>
+            {toDo}
+            <button onClick={() => deleteToDo(index)}>삭제</button>
+          </li>
+        ) : null)}
       </ul>
       <hr />
 

@@ -1,11 +1,23 @@
 import { useState, useEffect } from "react";
 import Movie from "../components/Movie";
 import { Link } from "react-router-dom";
+import Pagination from "../components/Pagination";
 
 function MovieHome(){
 
   const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState([]);
+
+  const [keyword, setKeyword] = useState("");
+  const onChange = (event) => setKeyword(event.target.value);
+  
+  const searchKeyword = movies.filter((movie) => {
+    return movie.title.toLocaleLowerCase().includes(keyword.toLocaleLowerCase())
+  });
+
+  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(1);
+  const offset = (page - 1) * limit;
   
   // 방법3
   const getMovies = async () => {
@@ -24,7 +36,28 @@ function MovieHome(){
         <h2>
           <Link to={`/`}>게시판 목록으로</Link>
         </h2>
-        {movies.map((movie) => (
+
+        <form onSubmit={searchKeyword}>
+          <input onChange={onChange} value={keyword} type="text" placeholder="search..."></input>
+          <button>제목 검색</button>
+        </form>
+        
+        <label>
+        페이지 당 표시할 게시물 수:
+          <select
+            type="number"
+            value={limit}
+            onChange={({ target: { value } }) => setLimit(Number(value))}
+          >
+            <option value="10">10</option>
+            <option value="12">12</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </label>
+
+        {searchKeyword.slice(offset, offset + limit).map((movie) => (
           <Movie 
             key={movie.id}
             id={movie.id}
@@ -37,6 +70,14 @@ function MovieHome(){
             genres={movie.genres}
           />
         ))}
+
+        <Pagination
+          total={movies.length}
+          limit={limit}
+          page={page}
+          setPage={setPage}
+        />
+
       </div>
       )}
     </div>
