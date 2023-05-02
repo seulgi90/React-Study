@@ -41,9 +41,23 @@ function MovieHome(){
           <input onChange={onChange} value={keyword} type="text" placeholder="search..."></input>
           <button>제목 검색</button>
         </form>
-        
+
+        {searchKeyword.slice(offset, offset + limit).map((movie) => (
+          <Movie 
+            key={movie.id}
+            id={movie.id}
+            // 자바스크립트에서는 medium_cover_image가 아닌mediumCoverImage로 쓰지만
+            // 내가 만든 컴포넌트라 자유롭게 작명 가능 -> coverImg
+            // 그러나 { movie.medium_cover_image } 에서는 API에서 가져오므로 API 정보와 똑같이 써야함
+            coverImg={movie.medium_cover_image}
+            title={movie.title}
+            summary={movie.summary.length > 400 ?  `${movie.summary.slice(0,400)}...` : movie.summary}
+            genres={movie.genres}  
+          />
+        ))}
+
         <label>
-        페이지 당 표시할 게시물 수:
+          페이지 당 표시할 게시물 수:
           <select
             type="number"
             value={limit}
@@ -56,20 +70,6 @@ function MovieHome(){
             <option value="100">100</option>
           </select>
         </label>
-
-        {searchKeyword.slice(offset, offset + limit).map((movie) => (
-          <Movie 
-            key={movie.id}
-            id={movie.id}
-            // 자바스크립트에서는 medium_cover_image가 아닌mediumCoverImage로 쓰지만
-            // 내가 만든 컴포넌트라 자유롭게 작명 가능 -> coverImg
-            // 그러나 { movie.medium_cover_image } 에서는 API에서 가져오므로 API 정보와 똑같이 써야함
-            coverImg={movie.medium_cover_image}
-            title={movie.title}
-            summary={movie.summary}
-            genres={movie.genres}
-          />
-        ))}
 
         <Pagination
           total={movies.length}
