@@ -1,0 +1,34 @@
+import React, {useCallback} from 'react';
+import BasicLayout from "../../layouts/BasicLayout.jsx";
+import {Outlet, useNavigate} from "react-router-dom";
+
+function IndexPage() {
+
+    const navigate = useNavigate();
+
+    const clickList = useCallback(
+        () => {
+            navigate({pathname: 'list'})
+        }
+    );
+
+    const clickAdd = useCallback(
+        () => {
+            navigate({pathname: 'add'})
+        }
+    );
+
+    return (
+        <BasicLayout>
+            <div className="w-full flex m-2 p-2 ">
+                <div className="text-xl m-1 p-2 w-20 font-extrabold text-center underline" onClick={clickList}>LIST</div>
+                <div className="text-xl m-1 p-2 w-20 font-extrabold text-center underline" onClick={clickAdd}>ADD</div>
+            </div>
+            <div className="flex flex-wrap w-full">
+                <Outlet/>
+            </div>
+        </BasicLayout>
+    );
+}
+
+export default IndexPage;
