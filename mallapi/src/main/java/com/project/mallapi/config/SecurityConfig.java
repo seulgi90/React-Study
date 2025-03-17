@@ -1,4 +1,4 @@
-package com.project.config;
+package com.project.mallapi.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -12,7 +12,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 @Configuration

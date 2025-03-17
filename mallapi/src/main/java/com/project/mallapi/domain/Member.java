@@ -35,4 +35,12 @@ public class Member {
     public void removeRole() {
         roleList.clear();
     }
+
+    public void changePw(String pw) {
+        this.pw = pw;
+    }
+
+    public void changeName(String name) {
+        this.name = name;
+    }
 }
