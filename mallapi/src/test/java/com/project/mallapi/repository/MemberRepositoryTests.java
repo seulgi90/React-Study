@@ -1,7 +1,7 @@
 package com.project.mallapi.repository;
 
 import com.project.mallapi.domain.Member;
-import com.project.mallapi.domain.Role;
+import com.project.mallapi.util.Role;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +26,11 @@ public class MemberRepositoryTests {
                     .pw(passwordEncoder.encode("1111"))
                     .name("USER" + i)
                     .build();
-            member.addRole(Role.USER);
+            member.addRole(Role.ROLE_USER);
             if (i >= 5)
-                member.addRole(Role.MANAGER);
+                member.addRole(Role.ROLE_MANAGER);
             if (i >= 8)
-                member.addRole(Role.ADMIN);
+                member.addRole(Role.ROLE_ADMIN);
             memberRepository.save(member);
         }
     }

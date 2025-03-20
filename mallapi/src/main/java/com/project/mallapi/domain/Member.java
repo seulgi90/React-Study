@@ -1,9 +1,7 @@
 package com.project.mallapi.domain;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
+import com.project.mallapi.util.Role;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -24,9 +22,10 @@ public class Member {
 
     private  String name;
 
-    @ElementCollection(fetch = FetchType.LAZY) // 여러개의 권한을 가질 경우 고려하여 추가
+    @ElementCollection(fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
     @Builder.Default
-    private List<Role> roleList = new ArrayList<>();
+    private List<Role> roleList = new ArrayList<>(); // 여러개의 권한을 가질 경우 고려하여 추가
 
     public void addRole(Role role) {
         roleList.add(role);
