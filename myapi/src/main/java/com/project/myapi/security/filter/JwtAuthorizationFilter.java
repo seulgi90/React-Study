@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.project.myapi.domain.Member;
 import com.project.myapi.dto.MemberDTO;
 import com.project.myapi.security.JwtProvider;
+import com.project.myapi.security.handler.CustomJWTException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,33 +54,43 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter { // OncePerReq
         try {
             String token = request.getHeader("Authorization");
 
-            if (token != null && token.startsWith("Bearer ")) {
-                token = token.substring(7); // "Bearer " 제거 후 토큰 값만 전달
+            if (token == null || !token.startsWith("Bearer ")) {
+                throw new CustomJWTException("유효하지 않은 Authorization 헤더입니다.");
             }
 
-
+            token = token.substring(7); // "Bearer " 제거 후 토큰 값만 전달
             UsernamePasswordAuthenticationToken auth = jwtProvider.getAuthentication(token); // UserDetsils, Password, Role -> 접근권한 인증 Token 생성
+
+
+            if (auth == null) {
+                throw new CustomJWTException("JWT 토큰 인증 실패");
+            }
+
             Authentication authentication = auth;
             SecurityContextHolder.getContext().setAuthentication(authentication); //현재 Request의 Security Context에 접근권한 설정
             filterChain.doFilter(request, response);
 
         } catch (Exception e) {
-            log.info("------JwtAuthorizationFilter Error ");
-
-            Gson gson = new Gson();
-            Map<String, Object> error = new HashMap<>();
-            error.put("error", true); // todo 에러 코드 정리 필요
-            error.put("message", "JwtAuthorizationFilter Error");
-            String jsonResponse = gson.toJson(error);
-
-            response.setContentType("application/json");
-
-            PrintWriter printWriter = response.getWriter();
-            printWriter.println(jsonResponse);
-            printWriter.close();
+            sendErrorResponse(response, "JWT 인증 중 내부 오류가 발생했습니다.");
         }
 
     }
+
+    private void sendErrorResponse(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+        response.setContentType("application/json; charset=UTF-8");
+
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", true);
+        error.put("message", message);
+
+        String jsonResponse = new Gson().toJson(error);
+        PrintWriter writer = response.getWriter();
+        writer.println(jsonResponse);
+        writer.close();
+    }
+
+
 
 
 }

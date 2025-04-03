@@ -17,14 +17,15 @@ import java.util.Map;
 @Log4j2
 public class CustomAccessDeniedhandler implements AccessDeniedHandler {
 
+    // AccessDeniedHandler : 인증되었지만 권한이 없는 경우
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
 
         Gson gson = new Gson();
 
         Map<String, Object> accessDeniedMsg = new HashMap<>();
-        accessDeniedMsg.put("error", "ERROR_ACCESSDENIED");
-        accessDeniedMsg.put("code", HttpStatus.FORBIDDEN.value());
+        accessDeniedMsg.put("error", "접근 권한이 없습니다");
+        accessDeniedMsg.put("code", HttpStatus.FORBIDDEN.value()); // 403
 
         String jsonResponse = gson.toJson(accessDeniedMsg);
 

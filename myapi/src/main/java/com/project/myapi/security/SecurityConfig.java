@@ -1,9 +1,10 @@
-package com.project.myapi.config;
+package com.project.myapi.security;
 
 import com.project.myapi.security.JwtProvider;
 import com.project.myapi.security.filter.JwtAuthorizationFilter;
 import com.project.myapi.security.handler.APILoginFailHandler;
 import com.project.myapi.security.handler.APILoginSuccessHandler;
+import com.project.myapi.security.handler.CustomAccessDeniedhandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
@@ -43,6 +44,8 @@ public class SecurityConfig {
             config.successHandler(new APILoginSuccessHandler(jwtProvider)); // 로그인 성공 후 jwt 토큰 발급 및 json 응답 처리 todo 로그인 컨트롤러 생성 시 이동 예정
             config.failureHandler(new APILoginFailHandler());
         });
+
+        http.exceptionHandling(config -> {config.accessDeniedHandler(new CustomAccessDeniedhandler());});
 
         http.addFilterBefore(new JwtAuthorizationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class); // UsernamePasswordAuthenticationFilter 동작 전에 JwtAuthorizationFilter 필터 먼저 실행 되도록 설정
         return http.build();
