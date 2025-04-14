@@ -1,8 +1,6 @@
 package com.project.myapi.security.filter;
 
 import com.google.gson.Gson;
-import com.project.myapi.domain.Member;
-import com.project.myapi.dto.MemberDTO;
 import com.project.myapi.security.JwtProvider;
 import com.project.myapi.security.handler.CustomJWTException;
 import jakarta.servlet.FilterChain;
@@ -13,14 +11,11 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Log4j2
@@ -40,7 +35,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter { // OncePerReq
         String path = request.getRequestURI();
 
         // 체크 제외
-        return path.equals("/login") ||
+        return path.equals("/api/login") ||
+                path.equals("/api/login/refresh") ||
                 path.startsWith("/css/") ||
                 path.startsWith("/js/") ||
                 path.startsWith("/images/");
@@ -70,10 +66,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter { // OncePerReq
             SecurityContextHolder.getContext().setAuthentication(authentication); //현재 Request의 Security Context에 접근권한 설정
             filterChain.doFilter(request, response);
 
-        } catch (Exception e) {
+        } catch (CustomJWTException e) {
+            log.warn("JWT 인증 실패: {}", e.getMessage());
+            sendErrorResponse(response, e.getMessage()); // ← 예외 메시지 그대로 클라이언트에 전달
+        }
+        catch (Exception e) {
+            log.error("알 수 없는 인증 오류 발생", e);
             sendErrorResponse(response, "JWT 인증 중 내부 오류가 발생했습니다.");
         }
-
     }
 
     private void sendErrorResponse(HttpServletResponse response, String message) throws IOException {

@@ -1,10 +1,9 @@
 package com.project.myapi.security;
 
-import com.project.myapi.security.JwtProvider;
 import com.project.myapi.security.filter.JwtAuthorizationFilter;
-import com.project.myapi.security.handler.APILoginFailHandler;
-import com.project.myapi.security.handler.APILoginSuccessHandler;
+import com.project.myapi.security.filter.JwtExceptionFilter;
 import com.project.myapi.security.handler.CustomAccessDeniedhandler;
+import com.project.myapi.security.handler.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +27,6 @@ import java.util.Arrays;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-
     private final JwtProvider jwtProvider;
 
     @Bean
@@ -36,18 +34,16 @@ public class SecurityConfig {
         log.info("-----Security start-----");
 
         http
-                .cors(cors -> {cors.configurationSource(corsConfigurationSource());}) // CORS 설정
-                .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (REST API 사용 시 필수)
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.formLogin(config -> {
-            config.loginPage("/login");
-            config.successHandler(new APILoginSuccessHandler(jwtProvider)); // 로그인 성공 후 jwt 토큰 발급 및 json 응답 처리 todo 로그인 컨트롤러 생성 시 이동 예정
-            config.failureHandler(new APILoginFailHandler());
-        });
+            .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (REST API 사용 시 필수)
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정
+            .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(new JwtExceptionFilter(), JwtAuthorizationFilter.class) //  JwtAuthorizationFilter에서 예외가 발생하기 전에 JwtExceptionFilter가 먼저 실행되도록 등록
+            .addFilterBefore(new JwtAuthorizationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class) // UsernamePasswordAuthenticationFilter 동작 전에 JwtAuthorizationFilter 필터 먼저 실행 되도록 설정
+            .exceptionHandling(ex -> ex
+                    .accessDeniedHandler(new CustomAccessDeniedhandler())
+                    .authenticationEntryPoint(new CustomAuthenticationEntryPoint()) // 인증 실패 시 처리
+            );
 
-        http.exceptionHandling(config -> {config.accessDeniedHandler(new CustomAccessDeniedhandler());});
-
-        http.addFilterBefore(new JwtAuthorizationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class); // UsernamePasswordAuthenticationFilter 동작 전에 JwtAuthorizationFilter 필터 먼저 실행 되도록 설정
         return http.build();
     }
 

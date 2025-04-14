@@ -90,16 +90,20 @@ public class JwtProvider {
 
             return claims;
 
-        } catch (MalformedJwtException e) {
-            throw new CustomJWTException("JWT 형식 오류", e);
         } catch (ExpiredJwtException e) {
             throw new CustomJWTException("AccessToken 만료됨", e);
+        } catch (MalformedJwtException e) {
+            throw new CustomJWTException("JWT 형식 오류", e);
         } catch (InvalidClaimException e) {
             throw new CustomJWTException("JWT 클레임 오류", e);
+        } catch (SecurityException e) {
+            throw new CustomJWTException("JWT 서명 오류", e);
+        } catch (UnsupportedJwtException e) {
+            throw new CustomJWTException("지원하지 않는 JWT", e);
         } catch (JwtException e) {
-            throw new CustomJWTException("JWT 서명 검증 실패", e);
+            throw new CustomJWTException("JWT 처리 중 오류 발생", e);
         } catch (Exception e) {
-            throw new CustomJWTException("JWT 처리 중 알 수 없는 오류", e);
+            throw new CustomJWTException("알 수 없는 JWT 처리 오류", e);
         }
     }
 

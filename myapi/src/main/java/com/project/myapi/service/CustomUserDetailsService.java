@@ -1,7 +1,7 @@
-package com.project.myapi.security;
+package com.project.myapi.service;
 
 import com.project.myapi.domain.Member;
-import com.project.myapi.dto.MemberDTO;
+import com.project.myapi.dto.MemberDto;
 import com.project.myapi.repository.MemberRepository;
 import com.project.myapi.util.Role;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .map(Role::getName)
                 .collect(Collectors.toList());
 
-        return new MemberDTO(member.getEmail(), member.getPassword(), member.getName(), roleNames);
+        return new MemberDto(member.getEmail(), member.getPassword(), member.getName(), roleNames);
     }
 
 }

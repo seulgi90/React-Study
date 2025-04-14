@@ -1,21 +1,19 @@
 package com.project.myapi.dto;
 
 
-import com.project.myapi.domain.Member;
-import com.project.myapi.util.Role;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MemberDTO extends User {
+public class MemberDto extends User {
 
     private String email;
     private String name;
     private List<String> roleNames;
 
-    public MemberDTO(String email, String password, String name, List<String> roleNames) {
+    public MemberDto(String email, String password, String name, List<String> roleNames) {
         super(email, password
                 , roleNames.stream()
                         .map(SimpleGrantedAuthority::new)
