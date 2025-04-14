@@ -7,10 +7,13 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -19,7 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Log4j2
-public class JwtAuthorizationFilter extends OncePerRequestFilter { // OncePerRequestFilter를 상속받아 요청당 한 번만 이 필터가 실행되도록 한다
+public class JwtAuthorizationFilter extends OncePerRequestFilter {
+    // JwtAuthenticationFilter는 헤더나 요청의 다른 부분에서 JWT 토큰을 추출
+    // OncePerRequestFilter를 상속받아 요청당 한 번만 이 필터가 실행되도록 한다
 
     private final JwtProvider jwtProvider;
 

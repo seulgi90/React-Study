@@ -37,8 +37,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (REST API 사용 시 필수)
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정
             .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(new JwtExceptionFilter(), JwtAuthorizationFilter.class) //  JwtAuthorizationFilter에서 예외가 발생하기 전에 JwtExceptionFilter가 먼저 실행되도록 등록
             .addFilterBefore(new JwtAuthorizationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class) // UsernamePasswordAuthenticationFilter 동작 전에 JwtAuthorizationFilter 필터 먼저 실행 되도록 설정
+            .addFilterBefore(new JwtExceptionFilter(), JwtAuthorizationFilter.class) //  JwtAuthorizationFilter에서 예외가 발생하기 전에 JwtExceptionFilter가 먼저 실행되도록 등록
             .exceptionHandling(ex -> ex
                     .accessDeniedHandler(new CustomAccessDeniedhandler())
                     .authenticationEntryPoint(new CustomAuthenticationEntryPoint()) // 인증 실패 시 처리
