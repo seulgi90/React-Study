@@ -1,15 +1,17 @@
 import { useState, useRef } from "react";
+import LoginIdInput from "./components/LoginIdInput";
+import Input from "./components/Input";
 
-function App() {
+function SignUp() {
   const loginRef = useRef(null);
   const passwordRef = useRef(null);
+  const nameRef =  useRef(null);
 
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({
-    loginIdError: "",
-    passwordError: "",
-  });
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [errors, setErrors] = useState({});
 
   const onChangeLoginId = (e) => {
     setLoginId(e.target.value);
@@ -17,6 +19,14 @@ function App() {
 
   const onChangePassword = (e) => {
     setPassword(e.target.value);
+  };
+
+  const onChangeName = (e) => {
+    setName(e.target.value);
+  };
+
+  const onChangePhone = (e) => {
+    setPhone(e.target.value);
   };
 
   const onLogin = () => {
@@ -31,6 +41,13 @@ function App() {
       passwordRef.current.focus();
       return;
     }
+
+    if(!name.trim()) {
+      setErrors({ nameError: "이름을 입력해주세요."});
+      nameRef.current.focus();
+      return;
+    }
+
     setErrors({});
   };
 
@@ -46,25 +63,7 @@ function App() {
         }}
         className="login-container"
       >
-        <div>
-          <label
-            htmlFor="loginId"
-            style={{ display: "inline-block", width: "80px" }}
-          >
-            아이디
-          </label>
-          <input
-            ref={loginRef}
-            id="loginId"
-            type="text"
-            value={loginId}
-            onChange={onChangeLoginId}
-            placeholder="아이디"
-          />
-          {errors.loginIdError && (
-            <p style={{ color: "red" }}>{errors.loginIdError}</p>
-          )}
-        </div>
+        <LoginIdInput id="loginId" text="아이디" loginRef={loginRef} loginId={loginId} onChangeLoginId={onChangeLoginId} errors={errors} />
         <div>
           <label
             htmlFor="password"
@@ -83,10 +82,11 @@ function App() {
             <p style={{ color: "red" }}>{errors.passwordError}</p>
           )}
         </div>
-        <button onClick={onLogin}>로그인</button>
+          <Input id="name" text="이름" nameRef={nameRef} name={name} onChangeName={onChangeName} errors={errors} />
+        <button onClick={onLogin}>회원가입</button>
       </div>
     </>
   );
 }
 
-export default App;
+export default SignUp;
