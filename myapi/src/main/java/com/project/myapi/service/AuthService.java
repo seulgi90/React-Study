@@ -6,11 +6,13 @@ import com.project.myapi.repository.RefreshTokenRepository;
 import com.project.myapi.security.JwtProvider;
 import com.project.myapi.security.handler.CustomJWTException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Map;
 
+@Log4j2
 @RequiredArgsConstructor
 @Service
 public class AuthService {
@@ -19,6 +21,7 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     public Map<String, Object> validateAndRefreshTokens(String authHeader, String refreshToken) {
+        log.info("-------------- AuthService >  validateAndRefreshTokens");
 
         if (refreshToken == null) {
             throw new CustomJWTException("Null refreshToken");

@@ -7,13 +7,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -36,7 +33,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     // true : 필터 동작 안함,  false :  필터 동작(체크)
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-
+        log.info("------------- JwtAuthorizationFilter > shouldNotFilter -------------");
         String path = request.getRequestURI();
 
         // 체크 제외
@@ -50,7 +47,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        log.info("-------------doFilterInternal-------------");
+        log.info("------------- JwtAuthorizationFilter > doFilterInternal -------------");
 
         try {
             String token = request.getHeader("Authorization");
@@ -68,12 +65,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
 
             Authentication authentication = auth;
-            SecurityContextHolder.getContext().setAuthentication(authentication); //현재 Request의 Security Context에 접근권한 설정
+            SecurityContextHolder.getContext().setAuthentication(authentication); // 현재 Request의 Security Context에 접근권한 설정
             filterChain.doFilter(request, response);
 
         } catch (CustomJWTException e) {
             log.warn("JWT 인증 실패: {}", e.getMessage());
-            sendErrorResponse(response, e.getMessage()); // ← 예외 메시지 그대로 클라이언트에 전달
+            sendErrorResponse(response, e.getMessage()); // 예외 메시지 그대로 클라이언트에 전달
         }
         catch (Exception e) {
             log.error("알 수 없는 인증 오류 발생", e);

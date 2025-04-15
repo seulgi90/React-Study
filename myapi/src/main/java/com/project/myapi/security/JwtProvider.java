@@ -5,6 +5,7 @@ import com.project.myapi.security.handler.CustomJWTException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,7 +15,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.Map;
 
-
+@Log4j2
 @Component
 public class JwtProvider {
 
@@ -39,6 +40,7 @@ public class JwtProvider {
     // jwt 구조 : Header, Payload, Signature로 구성
     // Signature :  토큰의 검증을 위해 사용되며, Header, Payload를 암호화한 값을 생성
     public Token generateToken(Map<String, Object> claims) {
+        log.info("----- JwtProvider > generateToken -----");
 
         Date now = new Date();
         Date accessExpiration = new Date(now.getTime() + ACCESS_TOKEN_EXP_TIME);
@@ -77,6 +79,8 @@ public class JwtProvider {
 
     // jwt 검증
     public Map<String, Object> validateToken(String token, SecretKey key) {
+        log.info("----- JwtProvider > validateToken -----");
+
         try {
             Map<String, Object> claims = Jwts.parser()
                     .verifyWith(key) // 지정 된 키로 검증
@@ -108,6 +112,8 @@ public class JwtProvider {
     }
 
     public UsernamePasswordAuthenticationToken getAuthentication(String token) {
+        log.info("----- JwtProvider > getAuthentication -----");
+
         Map<String, Object> claims = validateAccessToken(token);
 
         String email = (String) claims.get("email");
@@ -117,6 +123,8 @@ public class JwtProvider {
     }
 
     public boolean isTokenExpired(String token) {
+        log.info("----- JwtProvider > isTokenExpired -----");
+
         try {
             validateAccessToken(token);
             return false;
@@ -128,6 +136,7 @@ public class JwtProvider {
     }
 
     public boolean isExpiringSoon(Date expirationTime) {
+        log.info("----- JwtProvider > isExpiringSoon -----");
 
         // 현재 시간과의 차이 계산 - 밀리세컨즈
         long timeLeftMillis = expirationTime.getTime() - System.currentTimeMillis();

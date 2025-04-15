@@ -73,8 +73,6 @@ public class LoginController {
     @PostMapping("/login/refresh")
     public Map<String, Object> refresh(@RequestHeader("Authorization") String authHeader, @RequestBody String refreshToken) {
 
-        Map<String, Object> auth = authService.validateAndRefreshTokens(authHeader, refreshToken);
-
-        return auth;
+        return authService.validateAndRefreshTokens(authHeader, refreshToken);
     }
 }
