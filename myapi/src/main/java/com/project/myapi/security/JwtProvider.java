@@ -23,8 +23,8 @@ public class JwtProvider {
 
     private static final String SECRET_KEY = "VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa";
     private static final String REFRESH_KEY = "V2pkQmZxS3NzTG5ZdXRXak5lZFlYSGIwc0xOZWZXVFE=";
-//    private static final long ACCESS_TOKEN_EXP_TIME = 1000 * 60 * 60; // 1시간
-    private static final long ACCESS_TOKEN_EXP_TIME =  1000 * 10; // 10초 토큰 테스트 위함
+    private static final long ACCESS_TOKEN_EXP_TIME = 1000 * 60 * 60; // 1시간
+//    private static final long ACCESS_TOKEN_EXP_TIME =  1000 * 10; // 10초 토큰만료 테스트 위함
     private static final long REFRESH_TOKEN_EXP_TIME = 1000 * 60 * 60 * 24; // 24시간
 
     private final SecretKey secretKey;
