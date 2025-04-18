@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.myapi.util.AuthTestUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,7 +41,7 @@ class RoleControllerTest {
     }
 
     @Test
-    @DisplayName("ADMIN 권한이 있는 토큰으로 /api/hasRole 접근 성공")
+    @DisplayName("ADMIN 권한이 있는 토큰으로 /api/hasRole 접근 성공 테스트")
     void accessWithAdminRole() throws Exception {
         // 로그인 요청
         String token = AuthTestUtil.getAccessToken(mockMvc, objectMapper, "user9@aaa.com", "1111");
@@ -49,6 +50,20 @@ class RoleControllerTest {
         mockMvc.perform(get("/api/hasRole")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+
+    @Test
+    @DisplayName("ADMIN 권한이 없는 토큰으로 /api/hasRole 접근 실패 테스트")
+    void accessWithoutAdminRole() throws Exception {
+        // 로그인 요청
+        String token = AuthTestUtil.getAccessToken(mockMvc, objectMapper, "user0@aaa.com", "1111");
+
+        // 토큰으로 요청
+        mockMvc.perform(get("/api/hasRole")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(status().isForbidden())
                 .andDo(print());
     }
 

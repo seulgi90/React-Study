@@ -176,4 +176,5 @@ public class LoginControllerTest {
         assertNotEquals(oldAccessToken, newAccessToken, "AccessToken이 새로 발급되어야 합니다.");
         assertNotEquals(refreshToken, newRefreshToken, "RefreshToken도 새로 발급되어야 합니다.");
     }
+
 }
