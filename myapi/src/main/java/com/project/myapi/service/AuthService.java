@@ -33,10 +33,9 @@ public class AuthService {
 
         String accessToken = authHeader.substring(7); // Bearer xxxx... 제거
 
-        // accessToken이 아직 유효하면 DB에 저장된 최신 accessToken 반환 가능
+        // accessToken이 만료되지 않았다면 최신 accessToken 반환
         if (!jwtProvider.isTokenExpired(accessToken)) {
-            String email = (String) jwtProvider.validateAccessToken(accessToken).get("email");
-            RefreshToken latest = refreshTokenRepository.findById(email)
+            RefreshToken latest = refreshTokenRepository.findByAccessToken(accessToken)
                     .orElseThrow(() -> new CustomJWTException("DB에 저장된 accessToken 없음"));
 
             return Map.of(
@@ -47,19 +46,22 @@ public class AuthService {
 
         // refreshToken 검증
         Map<String, Object> claims = jwtProvider.validateRefreshToken(refreshToken);
+        log.info("----------------- refreshToken 검증 결과: {}", claims);
+
         String email = (String) claims.get("email");
 
         // DB에서 refreshToken 확인
         RefreshToken savedToken = refreshTokenRepository.findById(email)
                 .orElseThrow(() -> new CustomJWTException("DB에 저장된 리프레시 토큰 없음"));
 
-
+        // 요청한 사용자의 email 기준으로 DB에 저장된 refreshToken을 조회한 뒤,
+        // 클라이언트가 전달한 refreshToken과 비교하여 토큰의 소유자가 실제 사용자와 일치하는지 검증
         if (!savedToken.getRefreshToken().equals(refreshToken)) {
             throw new CustomJWTException("DB에 저장된 refreshToken과 일치하지 않음");
         }
 
-        // refreshToken 검증
-        Date refreshExp = new Date((Integer) claims.get("exp") * 1000L);
+        // refreshToken 만료 시간
+        Date refreshExp = new Date(((Number) claims.get("exp")).longValue() * 1000L);
 
         // access만 발급하거나, 둘 다 발급
         Token createdToken = jwtProvider.generateToken(claims);

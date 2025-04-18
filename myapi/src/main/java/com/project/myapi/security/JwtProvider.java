@@ -23,9 +23,17 @@ public class JwtProvider {
 
     private static final String SECRET_KEY = "VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa";
     private static final String REFRESH_KEY = "V2pkQmZxS3NzTG5ZdXRXak5lZFlYSGIwc0xOZWZXVFE=";
-    private static final long ACCESS_TOKEN_EXP_TIME = 1000 * 60 * 60; // 1시간
-//    private static final long ACCESS_TOKEN_EXP_TIME =  1000 * 10; // 10초 토큰만료 테스트 위함
-    private static final long REFRESH_TOKEN_EXP_TIME = 1000 * 60 * 60 * 24; // 24시간
+
+        private static final long ACCESS_TOKEN_EXP_TIME = 1000 * 60 * 60; // 1시간
+        private static final long REFRESH_TOKEN_EXP_TIME = 1000 * 60 * 60 * 24; // 24시간
+
+//    // RefreshToken 유효, AccessToken은 만료 테스트용
+//    private static final long ACCESS_TOKEN_EXP_TIME = 1000 * 10; // 10초 토큰만료 테스트 위함
+//    private static final long REFRESH_TOKEN_EXP_TIME = 1000 * 60 * 60 * 24;
+
+//    // RefreshToken 1시간 미만, AccessToken + RefreshToken 재발급 테스트용
+//    private static final long ACCESS_TOKEN_EXP_TIME = 1000 * 10; // 10초 토큰만료 테스트 위함
+//    private static final long REFRESH_TOKEN_EXP_TIME = 1000 * 30; // 30초 리프레시 토큰 만료 테스트 위함
 
     private final SecretKey secretKey;
     private final SecretKey refreshKey;
@@ -58,6 +66,7 @@ public class JwtProvider {
 
         // refreshToken 토큰 생성
         String refreshToken = Jwts.builder()
+                .claim("email", claims.get("email")) // 식별자
                 .expiration(refreshExpiration)
                 .signWith(refreshKey)
                 .compact();
@@ -84,54 +93,54 @@ public class JwtProvider {
         try {
             Map<String, Object> claims = Jwts.parser()
                     .verifyWith(key) // 지정 된 키로 검증
-                    .build()
-                    .parseSignedClaims(token) // 토큰 파싱 및 서명 검증
+                    .build() // 토큰 파싱 및 서명 검증, 실패 시 에러
+                    .parseSignedClaims(token)
                     .getPayload(); // JWT 페이로드(Claims) 값을 가져옴 claims.get("exp")
 
             if (claims == null) {
-                throw new CustomJWTException("Claim 파싱 실패 (null)");
+                throw new CustomJWTException("Claim 파싱 실패 (null)", false, null, null);
             }
-
             return claims;
 
         } catch (ExpiredJwtException e) {
-            throw new CustomJWTException("AccessToken 만료됨", e);
+            log.warn("JWT 만료: {}", e.getMessage());
+            throw new CustomJWTException("JWT 만료", true, e.getClaims(), e);  // 만료된 토큰의 claims를 포함해 예외 throw
+
         } catch (MalformedJwtException e) {
-            throw new CustomJWTException("JWT 형식 오류", e);
+            log.warn("JWT 형식 오류: {}", e.getMessage());
+            throw new CustomJWTException("JWT 형식 오류", false, null, e);
+
         } catch (InvalidClaimException e) {
-            throw new CustomJWTException("JWT 클레임 오류", e);
+            log.warn("JWT 클레임 오류: {}", e.getMessage());
+            throw new CustomJWTException("JWT 클레임 오류", false, null, e);
+
         } catch (SecurityException e) {
-            throw new CustomJWTException("JWT 서명 오류", e);
+            log.warn("JWT 서명 오류: {}", e.getMessage());
+            throw new CustomJWTException("JWT 서명 오류", false, null, e);
+
         } catch (UnsupportedJwtException e) {
-            throw new CustomJWTException("지원하지 않는 JWT", e);
+            log.warn("지원하지 않는 JWT: {}", e.getMessage());
+            throw new CustomJWTException("지원하지 않는 JWT", false, null, e);
+
         } catch (JwtException e) {
-            throw new CustomJWTException("JWT 처리 중 오류 발생", e);
+            log.warn("JWT 처리 중 오류: {}", e.getMessage());
+            throw new CustomJWTException("JWT 처리 중 오류 발생", false, null, e);
+
         } catch (Exception e) {
-            throw new CustomJWTException("알 수 없는 JWT 처리 오류", e);
+            log.error("알 수 없는 JWT 처리 오류: {}", e.getMessage());
+            throw new CustomJWTException("알 수 없는 JWT 처리 오류", false, null, e);
         }
     }
 
-    public UsernamePasswordAuthenticationToken getAuthentication(String token) {
-        log.info("----- JwtProvider > getAuthentication -----");
-
-        Map<String, Object> claims = validateAccessToken(token);
-
-        String email = (String) claims.get("email");
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-
-        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()); // 비번 없이 인증 객체 생성
-    }
-
+    // 토큰 만료 여부
     public boolean isTokenExpired(String token) {
         log.info("----- JwtProvider > isTokenExpired -----");
 
         try {
             validateAccessToken(token);
-            return false;
-        } catch (ExpiredJwtException e) {
-            return true;
-        } catch (JwtException e) {
-            throw new CustomJWTException("토큰 검증 중 오류 발생", e);
+            return false; // 유효
+        } catch (CustomJWTException e) {
+            return e.isExpired(); // 만료
         }
     }
 
@@ -145,4 +154,17 @@ public class JwtProvider {
 
         return minutesLeft < 60; // 1시간 미만
     }
+
+    // 인증 객체 생성
+    public UsernamePasswordAuthenticationToken getAuthentication(String token) {
+        log.info("----- JwtProvider > getAuthentication -----");
+
+        Map<String, Object> claims = validateAccessToken(token);
+
+        String email = (String) claims.get("email");
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()); // 비번 없이 인증 객체 생성
+    }
+
 }

@@ -59,7 +59,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             token = token.substring(7); // "Bearer " 제거 후 토큰 값만 전달
             UsernamePasswordAuthenticationToken auth = jwtProvider.getAuthentication(token); // UserDetsils, Password, Role -> 접근권한 인증 Token 생성
 
-
             if (auth == null) {
                 throw new CustomJWTException("JWT 토큰 인증 실패");
             }
@@ -91,8 +90,4 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         writer.println(jsonResponse);
         writer.close();
     }
-
-
-
-
 }
