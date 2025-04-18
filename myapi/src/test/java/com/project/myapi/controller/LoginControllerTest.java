@@ -3,11 +3,13 @@ package com.project.myapi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.project.myapi.dto.LoginDto;
+import com.project.myapi.util.AuthTestUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -16,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -176,5 +179,21 @@ public class LoginControllerTest {
         assertNotEquals(oldAccessToken, newAccessToken, "AccessToken이 새로 발급되어야 합니다.");
         assertNotEquals(refreshToken, newRefreshToken, "RefreshToken도 새로 발급되어야 합니다.");
     }
+
+    @Test
+    @DisplayName("변조된 토큰으로 접근 시 인증 실패 테스트")
+    void accessWithTamperedToken_shouldFail() throws Exception {
+        // 토큰 생성
+        String validToken = AuthTestUtil.getAccessToken(mockMvc, objectMapper, "user0@aaa.com", "1111");
+
+        // 토큰의 마지막 문자를 바꿔서 변조 (유효하지 않은 토큰)
+        String tamperedToken = validToken.substring(0, validToken.length() - 1) + "x";
+
+        mockMvc.perform(get("/api/hasRole")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tamperedToken))
+                .andExpect(status().isUnauthorized()) // 401 Unauthorized
+                .andDo(print());
+    }
+
 
 }
