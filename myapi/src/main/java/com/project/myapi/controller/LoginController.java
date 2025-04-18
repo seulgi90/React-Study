@@ -2,6 +2,7 @@ package com.project.myapi.controller;
 
 import com.project.myapi.domain.RefreshToken;
 import com.project.myapi.dto.LoginDto;
+import com.project.myapi.dto.MemberDto;
 import com.project.myapi.dto.Token;
 import com.project.myapi.repository.RefreshTokenRepository;
 import com.project.myapi.security.JwtProvider;
@@ -42,11 +43,16 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "비밀번호가 틀렸습니다."));
         }
 
-        // claims 생성
-        Map<String, Object> claims = Map.of(
-                "email", userDetails.getUsername(),
-                "roleNames", userDetails.getAuthorities().stream().map(Object::toString).toList()
-        );
+        // todo 유저의 정보가 늘어날 경우 고려 필요할 듯
+        MemberDto memberDto = (MemberDto) userDetails;
+
+        // 토큰 발급용 claims 생성
+        Map<String, Object> claims = memberDto.getClaims();
+        // claims 생성 -- 유저 정보 담기위
+//        Map<String, Object> claims = Map.of(
+//                "email", userDetails.getUsername(),
+//                "roleNames", userDetails.getAuthorities().stream().map(Object::toString).toList()
+//        );
 
         // 토큰 발급
         Token token = jwtProvider.generateToken(claims);
@@ -54,16 +60,19 @@ public class LoginController {
         // refreshToken 저장
         refreshTokenRepository.save(
                 RefreshToken.builder()
-                        .email(userDetails.getUsername())
+                        .email(memberDto.getUsername())
                         .accessToken(token.getAccessToken())
                         .refreshToken(token.getRefreshToken())
                         .build()
         );
 
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> userInfo = new HashMap<String, Object>();
+        userInfo.put("email", memberDto.getUsername());
+        userInfo.put("name", memberDto.getName());
+        userInfo.put("roles", memberDto.getAuthorities().toString());
 
-        result.put("loginId", userDetails.getUsername());
-        result.put("roles", userDetails.getAuthorities().toString());
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("userInfo", userInfo);
         result.put("accessToken", token.getAccessToken());
         result.put("refreshToken", token.getRefreshToken());
 

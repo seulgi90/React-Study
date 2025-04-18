@@ -1,12 +1,14 @@
 package com.project.myapi.dto;
 
 
+import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Getter
 public class MemberDto extends User {
 
     private String email;
