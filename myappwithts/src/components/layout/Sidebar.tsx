@@ -1,11 +1,27 @@
-
 import { Link, useLocation } from 'react-router-dom'
-import { FiHome, FiBarChart2 } from 'react-icons/fi'
+import { FiHome, FiBarChart2, FiSettings } from 'react-icons/fi'
 
 const sidebarItems = [
-  { path: '/', label: 'Home', icon: <FiHome className="text-lg" /> },
-  { path: '/dashBoard', label: 'Dashboard', icon: <FiBarChart2 className="text-lg" /> },
-  { path: '/setting', label: 'Setting', icon: <FiBarChart2 className="text-lg" /> },
+  {
+    path: '/',
+    label: 'Home',
+    icon: <FiHome className="text-lg" />,
+  },
+  {
+    path: '/dashBoard',
+    label: 'Dashboard',
+    icon: <FiBarChart2 className="text-lg" />,
+    children: [
+      { path: '/dashBoard/overview', label: 'Overview' },
+      { path: '/dashBoard/users', label: 'User Management' },
+      { path: '/dashBoard/settings', label: 'Dash Settings' },
+    ],
+  },
+  {
+    path: '/setting',
+    label: 'Setting',
+    icon: <FiSettings className="text-lg" />,
+  },
 ]
 
 export default function Sidebar() {
@@ -17,24 +33,43 @@ export default function Sidebar() {
 
       <nav className="space-y-1">
         {sidebarItems.map((item) => {
-          const isActive = location.pathname === item.path
+          const isActive = location.pathname.startsWith(item.path)
 
           return (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex items-center gap-3 px-4 py-2 rounded-md transition
-                ${isActive ? 'bg-gray-100 text-black font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </Link>
+            <div key={item.path}>
+              <Link
+                to={item.path}
+                className={`flex items-center gap-3 px-4 py-2 rounded-md transition
+                  font-semibold tracking-tight
+                  ${isActive ? 'bg-gray-100 text-black' : 'text-gray-800 hover:bg-gray-100'}`}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </Link>
+
+              {/* 하위 메뉴 있을 경우 */}
+              {item.children && item.children.length > 0 && isActive && (
+                <div className="ml-10 mt-1 space-y-1">
+                  {item.children.map((sub) => {
+                    const isSubActive = location.pathname === sub.path
+
+                    return (
+                      <Link
+                        key={sub.path}
+                        to={sub.path}
+                        className={`block px-2 py-1 rounded-md transition text-sm
+                          ${isSubActive ? 'bg-gray-100 text-black font-medium' : 'text-gray-700 hover:bg-gray-50'}`}
+                      >
+                        {sub.label}
+                      </Link>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
           )
         })}
       </nav>
     </aside>
   )
 }
-
-
-

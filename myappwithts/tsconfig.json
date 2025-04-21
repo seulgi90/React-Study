@@ -1,5 +1,16 @@
 {
-  "files": [],
+  "compilerOptions": {
+    "types": ["node"],  // Node.js 타입을 포함
+    "strict": true,  // TypeScript의 엄격한 타입 검사 활성화
+    "esModuleInterop": true,  // ES 모듈과 CommonJS 모듈 간 호환성
+    "skipLibCheck": true,  // 라이브러리 타입 검사 건너뛰기 (성능 개선)
+    "forceConsistentCasingInFileNames": true,  // 파일 이름 대소문자 일관성 강제
+    "moduleResolution": "node",  // 모듈 해석을 Node.js 방식으로 설정
+    "module": "ESNext",  // ES 모듈 사용
+    "target": "ESNext",  // 최신 JavaScript 문법을 타겟으로 설정
+    "lib": ["DOM", "ESNext"]  // 필요한 라이브러리 정의 (DOM과 ESNext)
+  },
+  "files": [],  // 필요하지 않으면 비워두기
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }

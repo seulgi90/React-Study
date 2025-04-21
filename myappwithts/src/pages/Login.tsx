@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 import { useUserStore } from "../store/userStore";
+import useAxios from "../utils/useAxios";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -17,7 +17,7 @@ export default function Login() {
     setError("");
 
     try {
-      const response = await axios.post("/api/login", { email, password });
+      const response = await useAxios.post("login", { email, password });
 
       const { userInfo, accessToken, refreshToken } = response.data;
 
@@ -29,6 +29,7 @@ export default function Login() {
       setUser(userInfo);
 
       navigate("/");
+      console.log('login 성공===', userInfo )
     } catch (err) {
       console.error("로그인 에러:", err);
       setError("로그인 실패");
