@@ -22,15 +22,21 @@ public class JwtProvider {
     private final UserDetailsService userDetailsService;
 
     private static final String SECRET_KEY = "VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa";
-    private static final String REFRESH_KEY = "V2pkQmZxS3NzTG5ZdXRXak5lZFlYSGIwc0xOZWZXVFE=";
+    private static final String REFRESH_KEY = "lnk5bmtVdC9n0wFryI7uJBVgl1+NcoY0yccrFUlPl0U=";
 
         private static final long ACCESS_TOKEN_EXP_TIME = 1000 * 60 * 60; // 1시간
         private static final long REFRESH_TOKEN_EXP_TIME = 1000 * 60 * 60 * 24; // 24시간
 
+    // 화면 테스트용
+//    private static final long ACCESS_TOKEN_EXP_TIME = 1000 * 10; // 10초 (accessToken)
+//    private static final long REFRESH_TOKEN_EXP_TIME = 1000 * 60 * 5; // 1분 (refreshToken)
+
+    // @Test 용
 //    // RefreshToken 유효, AccessToken은 만료 테스트용
 //    private static final long ACCESS_TOKEN_EXP_TIME = 1000 * 10; // 10초 토큰만료 테스트 위함
 //    private static final long REFRESH_TOKEN_EXP_TIME = 1000 * 60 * 60 * 24;
 
+    // @Test 용
 //    // RefreshToken 1시간 미만, AccessToken + RefreshToken 재발급 테스트용
 //    private static final long ACCESS_TOKEN_EXP_TIME = 1000 * 10; // 10초 토큰만료 테스트 위함
 //    private static final long REFRESH_TOKEN_EXP_TIME = 1000 * 30; // 30초 리프레시 토큰 만료 테스트 위함
@@ -103,7 +109,7 @@ public class JwtProvider {
             return claims;
 
         } catch (ExpiredJwtException e) {
-            log.warn("JWT 만료: {}", e.getMessage());
+            log.warn("JWT 처리 중 오류: {}", e.getMessage(), e);
             throw new CustomJWTException("JWT 만료", true, e.getClaims(), e);  // 만료된 토큰의 claims를 포함해 예외 throw
 
         } catch (MalformedJwtException e) {

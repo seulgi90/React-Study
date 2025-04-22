@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Log4j2
 @RestController
@@ -69,7 +70,12 @@ public class LoginController {
         Map<String, Object> userInfo = new HashMap<String, Object>();
         userInfo.put("email", memberDto.getUsername());
         userInfo.put("name", memberDto.getName());
-        userInfo.put("roles", memberDto.getAuthorities().toString());
+        userInfo.put(
+                "roles",
+                memberDto.getAuthorities().stream()
+                        .map(grantedAuthority -> grantedAuthority.getAuthority())
+                        .collect(Collectors.toList())
+        );
 
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("userInfo", userInfo);
@@ -80,7 +86,9 @@ public class LoginController {
     }
 
     @PostMapping("/login/refresh")
-    public ResponseEntity<?> refresh(@RequestHeader("Authorization") String authHeader, @RequestBody String refreshToken) {
+    public ResponseEntity<?> refresh(@RequestHeader("Authorization") String authHeader, @RequestBody Map<String, String> body) {
+        String refreshToken = body.get("refreshToken");
+
         Map<String, Object> result = authService.validateAndRefreshTokens(authHeader, refreshToken);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

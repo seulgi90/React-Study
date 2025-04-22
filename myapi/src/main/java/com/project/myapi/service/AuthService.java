@@ -83,8 +83,8 @@ public class AuthService {
         );
 
         return Map.of(
-                "accessToken", newTokens.getAccessToken(),
-                "refreshToken", newTokens.getRefreshToken()
+                "newAccessToken", newTokens.getAccessToken(),
+                "newRefreshToken", newTokens.getRefreshToken()
         );
     }
 }
