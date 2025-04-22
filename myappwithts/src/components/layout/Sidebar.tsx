@@ -8,13 +8,13 @@ const sidebarItems = [
     icon: <FiHome className="text-lg" />,
   },
   {
-    path: '/dashBoard',
-    label: 'Dashboard',
+    path: '/userList',
+    label: '회원관리',
     icon: <FiBarChart2 className="text-lg" />,
     children: [
-      { path: '/dashBoard/overview', label: 'Overview' },
-      { path: '/dashBoard/users', label: 'User Management' },
-      { path: '/dashBoard/settings', label: 'Dash Settings' },
+      { path: '/userList/overview', label: 'Overview' },
+      { path: '/userList/users', label: 'User Management' },
+      { path: '/userList/settings', label: 'Dash Settings' },
     ],
   },
   {

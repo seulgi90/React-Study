@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 type User = {
+  roles: any
   email: string
   name: string
   roleNames: string[]

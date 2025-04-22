@@ -10,7 +10,7 @@ export default function Header() {
 
   const pageTitleMap: Record<string, string> = {
     '/': 'HOME',
-    '/dashBoard': '대시보드',
+    '/userList': '회원관리',
   }
 
   const title = pageTitleMap[location.pathname] || ''
