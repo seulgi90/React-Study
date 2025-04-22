@@ -1,33 +1,22 @@
 import { useState, useRef } from "react";
+import LoginIdInput from "./components/LoginIdInput";
+import Input from "./components/Input";
+import useInput from "./hooks/useInput";
 
 function App() {
-  const loginRef = useRef(null);
-  const passwordRef = useRef(null);
-
-  const [loginId, setLoginId] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({
-    loginIdError: "",
-    passwordError: "",
-  });
-
-  const onChangeLoginId = (e) => {
-    setLoginId(e.target.value);
-  };
-
-  const onChangePassword = (e) => {
-    setPassword(e.target.value);
-  };
+  const [loginId, loginRef, onChangeLoginId] = useInput("");
+  const [password, passwordRef, onChangePassword] = useInput("");
+  const [errors, setErrors] = useState({});
 
   const onLogin = () => {
     if (!loginId.trim()) {
-      setErrors({ loginIdError: "아이디를 입력해주세요." });
+      setErrors("아이디를 입력해주세요.");
       loginRef.current.focus();
       return;
     }
 
     if (!password.trim()) {
-      setErrors({ passwordError: "비밀번호를 입력해주세요." });
+      setErrors("비밀번호를 입력해주세요.");
       passwordRef.current.focus();
       return;
     }
@@ -46,45 +35,18 @@ function App() {
         }}
         className="login-container"
       >
-        <div>
-          <label
-            htmlFor="loginId"
-            style={{ display: "inline-block", width: "80px" }}
-          >
-            아이디
-          </label>
-          <input
-            ref={loginRef}
-            id="loginId"
-            type="text"
-            value={loginId}
-            onChange={onChangeLoginId}
-            placeholder="아이디"
-          />
-          {errors.loginIdError && (
-            <p style={{ color: "red" }}>{errors.loginIdError}</p>
-          )}
-        </div>
-        <div>
-          <label
-            htmlFor="password"
-            style={{ display: "inline-block", width: "80px" }}
-          >
-            비밀번호
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={onChangePassword}
-            placeholder="비밀번호"
-          />
-          {errors.passwordError && (
-            <p style={{ color: "red" }}>{errors.passwordError}</p>
-          )}
-        </div>
+        <LoginIdInput id="loginId" text="ID" type="text" loginRef={loginRef} loginId={loginId} onChangeLoginId={onChangeLoginId} errors={errors} />
+        <Input
+          id="password"
+          text="Password"
+          type="password"
+          inputRef={passwordRef}
+          value={password}
+          onChange={onChangePassword}
+          errors={errors}
+        />
         <button onClick={onLogin}>로그인</button>
-      </div>
+        </div>
     </>
   );
 }

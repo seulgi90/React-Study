@@ -1,22 +1,30 @@
-export default function Input({
+import { memo } from "react";
+
+function Input({
   id,
   text,
-  nameRef,
-  name,
-  onChangeName,
+  type,
+  inputRef,
+  value,
+  onChange,
   errors
 }) {
   return (
     <div>
-      <label htmlFor={id}>이름</label>
+      <label htmlFor={id} style={{ display: "inline-block", width: "80px" }}>
+        {text}
+      </label>
       <input
-        ref={nameRef}
-        type={text}
-        value={name}
-        onChange={onChangeName}
-        placeholder="이름"
+        id={id}
+        type={type}
+        ref={inputRef}
+        value={value}
+        onChange={onChange}
+        placeholder={text}
       />
-      {errors && <p style={{ color: "red" }}>{errors.nameError}</p>}
+      {errors && <p style={{ color: "red" }}>{errors[`${id}Error`]}</p>}
     </div>
   );
 }
+
+export default memo(Input);

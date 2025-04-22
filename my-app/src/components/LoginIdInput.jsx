@@ -1,4 +1,7 @@
-export default function LoginIdInput({ id, text, loginRef, loginId, onChangeLoginId, errors }) {
+import { memo } from "react";
+// memo : 부모가 리렌더링 되었더라도 자삭의 props가 바뀌었을 때만 리렌더링된다
+
+function LoginIdInput({ id, text, type, loginRef, loginId, onChangeLoginId, errors }) {
 
   return (
     <div>
@@ -6,15 +9,15 @@ export default function LoginIdInput({ id, text, loginRef, loginId, onChangeLogi
         htmlFor={id}
         style={{ display: "inline-block", width: "80px" }}
       >
-        아이디
+        {text}
       </label>
       <input
-        ref={loginRef}
         id={id}
-        type={text}
+        type={type}
+        placeholder={text}
+        ref={loginRef}
         value={loginId}
         onChange={onChangeLoginId}
-        placeholder="아이디"
       />
       {errors.loginIdError && (
         <p style={{ color: "red" }}>{errors.loginIdError}</p>
@@ -22,3 +25,5 @@ export default function LoginIdInput({ id, text, loginRef, loginId, onChangeLogi
     </div>
   );
 }
+
+export default memo(LoginIdInput);
