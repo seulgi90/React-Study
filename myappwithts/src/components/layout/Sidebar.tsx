@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { FiHome, FiBarChart2, FiSettings } from 'react-icons/fi'
+import { FiHome, FiBarChart2, FiFileText } from 'react-icons/fi';
 
 const sidebarItems = [
   {
@@ -12,15 +12,13 @@ const sidebarItems = [
     label: '회원관리',
     icon: <FiBarChart2 className="text-lg" />,
     children: [
-      { path: '/userList/overview', label: 'Overview' },
-      { path: '/userList/users', label: 'User Management' },
-      { path: '/userList/settings', label: 'Dash Settings' },
+      { path: '/userList/create', label: '사용자 등록-미구현' },
     ],
   },
   {
-    path: '/setting',
-    label: 'Setting',
-    icon: <FiSettings className="text-lg" />,
+    path: '/typeTest',
+    label: '타입테스트',
+    icon: <FiFileText className="text-lg" />,
   },
 ]
 

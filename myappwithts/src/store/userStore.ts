@@ -13,7 +13,7 @@ interface UserState {
   setUser: (user: User) => void
   clearUser: () => void
 }
-
+// persist: Zustand 미들웨어, 상태를 브라우저 저장소(localStorage, sessionStorage 등)에 자동 저장/복원, 첫 번째 인자: 상태와 액션 정의 함수 , 두 번째 인자: 옵션 객체
 export const useUserStore = create<UserState>()(
     persist(
       (set) => ({
