@@ -20,6 +20,11 @@ const sidebarItems = [
     label: '타입테스트',
     icon: <FiFileText className="text-lg" />,
   },
+  {
+    path: '/reactQueryTest',
+    label: '리액트쿼리 테스트',
+    icon: <FiFileText className="text-lg" />,
+  },
 ]
 
 export default function Sidebar() {

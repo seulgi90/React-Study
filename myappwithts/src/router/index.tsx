@@ -8,7 +8,8 @@ const Loading = <div className={"bg-red-500"}>Loading...</div>;
 const Login = lazy(() => import("../pages/Login"));
 const Home = lazy(() => import("../pages/Home"));
 const UserList = lazy(() => import("../pages/UserList"));
-const TypeTest = lazy(() => import("../pages/test/TestPage.tsx"));
+const TypeTest = lazy(() => import("../pages/typeTest/TestPage.tsx"));
+const ReactQueryTest = lazy(() => import("../pages/reactQueryTest/TodoListPage.tsx"));
 
 // const Settings = lazy(() => import('../pages/Settings'))
 
@@ -55,6 +56,14 @@ const router = createBrowserRouter([
         </Suspense>
       ),
     },
+  {
+    path: '/reactQueryTest',
+    element: (
+      <Suspense fallback={Loading}>
+        <Layout><ReactQueryTest /></Layout>
+      </Suspense>
+    ),
+  },
 ]);
 
 export default router;
