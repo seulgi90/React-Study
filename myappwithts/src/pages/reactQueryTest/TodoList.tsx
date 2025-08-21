@@ -2,18 +2,21 @@ import { useQuery} from '@tanstack/react-query';
 
 const TodoList = () => {
 
-  const { data, isPending, isFetching, refetch } = useQuery({
+  const { data, isPending, isFetching, refetch, isError, error } = useQuery({
     queryKey: ["todoList"], // 각 쿼리를 식별하기 위해 사용하는 고유 한 값
     queryFn: async () => {
       const response = await fetch(
-        "https://jsonplaceholder.typicode.com/todos"
+        // "https://jsonplaceholder.typicode.com/todos"
+        "https://jsonplaceholder.typicodeccc.com/todos" // 에러 발생용 주소
       );
       return await response.json();
-    }
+    },
+    retry: false // true : 실패 시 무한으로 재시도
   })
 
-  console.log('isPending', isPending)
-  console.log('isFetching', isFetching)
+  if (isError) {
+    return "에러 발생 : " + error.message;
+  }
 
   return (
     <>
