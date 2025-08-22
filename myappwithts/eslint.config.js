@@ -5,8 +5,10 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
 import { defineConfig } from "eslint/config";
+import pluginQuery from '@tanstack/eslint-plugin-query'
 
 export default defineConfig([
+  ...pluginQuery.configs['flat/recommended'],
   // JavaScript 및 TypeScript 파일에 적용될 규칙
   {
     files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
