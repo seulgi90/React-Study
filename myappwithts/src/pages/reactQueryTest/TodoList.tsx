@@ -17,7 +17,8 @@ const TodoList = () => {
     // enabled: isEnabledQuery, // 쿼리 자동 실행 여부 , 기본값 true
     // refetchInterval: 3000, // 실시간 데이터가 필요한 경우 사용
     // refetchOnWindowFocus: false, // 브라우저 창이 다시 포커스를 얻었을 때 쿼리를 자동으로 다시 실행할지 여부를 제어, 기본값 true
-    staleTime: 3000
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000 // default: 5 * 60 * 1000(5분) Garbage Collection Time -
   })
 
   if (isError) {
